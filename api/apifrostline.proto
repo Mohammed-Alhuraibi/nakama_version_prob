@@ -1,0 +1,146 @@
+// Copyright 2018 The Nakama Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * The Nakama server RPC protocol for games and apps.
+ */
+ syntax = "proto3";
+
+ // The realtime protocol for the template match engine.
+ package frostlineapi;
+
+ option go_package = "github.com/FrostlineGamesRepos/FrostlineGames-Nakama/frostlineapi";
+
+ import "google/api/annotations.proto";
+ import "google/protobuf/empty.proto";
+
+
+message UserInfoResponse {
+
+  string id = 1;
+
+  string username = 2;
+
+  string email = 3;
+
+  string displayName = 4;
+
+  string lang = 5;
+
+  string avatarUrl = 6;
+
+  string location = 7;
+
+  string timezone = 8;
+
+  string coins = 9;
+
+  string gems = 10;
+
+  string xp = 11;
+
+  string level = 12;
+
+  string lastLogin = 13;
+
+ }
+
+ message GetUserInventory {
+
+  string id = 1;
+  repeated InventoryItem items = 2;
+
+ }
+
+ message InventoryItem {
+
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string price = 4;
+  string currency = 5;
+  string imageUrl = 6;
+ }
+
+ message GetShopData {
+
+  string id = 1;
+  repeated ShopItem items = 2;
+
+ }
+
+ message ShopItem {
+
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string price = 4;
+  string currency = 5;
+  string imageUrl = 6;
+ }
+
+ message GetTransactionsList {
+
+  string id = 1;
+  repeated Transaction transactions = 2;
+
+ }
+
+ message Transaction {
+
+  string id = 1;
+  string name = 2;
+  string description = 3;
+ }
+
+ message GetTransactionResponse {
+
+  string id = 1;
+  string name = 2;
+  string description = 3;
+ }
+
+ message TransactionId {
+
+  string id = 1;
+ }
+
+ /**
+  * The Nakama RPC protocol service built with GRPC.
+  */
+ service Nakama {
+   // Get User Account details.
+  rpc GetUserInfo (google.protobuf.Empty) returns (UserInfoResponse) {
+    option (google.api.http).get = "/v2/getuserinfo";
+  }
+
+   rpc GetInventory (google.protobuf.Empty) returns (GetUserInventory) {
+    option (google.api.http).get = "/v2/getuserinventory";
+   }
+
+   rpc GetShop (google.protobuf.Empty) returns (GetShopData) {
+    option (google.api.http).get = "/v2/getshopdata";
+   }
+
+   // Get purchased transactions
+   rpc GetTransactions (google.protobuf.Empty) returns (GetTransactionsList) {
+    option (google.api.http).get = "/v2/getusertransactions";
+   }
+
+    // get spesific transactions for UserId
+   rpc GetTransactionInfo (TransactionId) returns (GetTransactionResponse) {
+    option (google.api.http).get = "/v2/gettransactioninfo";
+   }
+
+ }
